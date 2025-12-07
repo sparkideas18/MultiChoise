@@ -1,0 +1,7 @@
+{
+  "name": "MultiChoice",
+  "description": "An all-in-one multitools platform featuring a smart dashboard, productivity utilities, finance tracking, and a Deep Reasoning Assistant powered by Gemini 3 Pro.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
