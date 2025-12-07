@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import DeepThinker from './components/tools/DeepThinker';
 import FinanceTracker from './components/tools/FinanceTracker';
 import NotePad from './components/tools/NotePad';
+import MarkdownEditor from './components/tools/MarkdownEditor';
 import UnitConverter from './components/tools/UnitConverter';
 import AgeCalculator from './components/tools/AgeCalculator';
 import EmiCalculator from './components/tools/EmiCalculator';
@@ -59,6 +60,7 @@ const App: React.FC = () => {
           <Route path="tool/deep-thinker" element={<DeepThinker />} />
           <Route path="tool/finance" element={<FinanceTracker />} />
           <Route path="tool/notepad" element={<NotePad />} />
+          <Route path="tool/markdown-editor" element={<MarkdownEditor />} />
           <Route path="tool/converter" element={<UnitConverter />} />
           <Route path="tool/age-calculator" element={<AgeCalculator />} />
           <Route path="tool/emi-calculator" element={<EmiCalculator />} />

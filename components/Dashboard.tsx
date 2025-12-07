@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tool, ToolCategory } from '../types';
 
@@ -8,7 +8,7 @@ const tools: Tool[] = [
     name: 'Deep Reasoner',
     description: 'Advanced AI assistant powered by Gemini 3 Pro with deep thinking capabilities for complex problem solving.',
     category: ToolCategory.PRODUCTIVITY,
-    icon: 'psychology',
+    icon: 'psychology_alt',
     path: '/tool/deep-thinker',
     color: 'from-purple-500 to-indigo-600'
   },
@@ -17,7 +17,7 @@ const tools: Tool[] = [
     name: 'Finance Tracker',
     description: 'Track your income and expenses with visual analytics and categorization.',
     category: ToolCategory.FINANCE,
-    icon: 'payments',
+    icon: 'account_balance_wallet',
     path: '/tool/finance',
     color: 'from-emerald-500 to-teal-600'
   },
@@ -31,11 +31,20 @@ const tools: Tool[] = [
     color: 'from-amber-500 to-orange-600'
   },
   {
+    id: 'markdown-editor',
+    name: 'Markdown Editor',
+    description: 'Write, preview, and refine markdown with AI assistance.',
+    category: ToolCategory.PRODUCTIVITY,
+    icon: 'code',
+    path: '/tool/markdown-editor',
+    color: 'from-sky-500 to-blue-600'
+  },
+  {
     id: 'converter',
     name: 'Unit Converter',
     description: 'Convert between common units of measurement instantly.',
     category: ToolCategory.UTILITY,
-    icon: 'transform',
+    icon: 'sync_alt',
     path: '/tool/converter',
     color: 'from-blue-500 to-cyan-600'
   },
@@ -53,7 +62,7 @@ const tools: Tool[] = [
     name: 'BMI Calculator',
     description: 'Calculate your Body Mass Index (BMI).',
     category: ToolCategory.UTILITY,
-    icon: 'health_and_safety',
+    icon: 'monitor_weight',
     path: '/tool/bmi-calculator',
     color: 'from-emerald-500 to-green-600'
   },
@@ -62,7 +71,7 @@ const tools: Tool[] = [
     name: 'Timer & Stopwatch',
     description: 'A versatile timer and stopwatch for all your needs.',
     category: ToolCategory.UTILITY,
-    icon: 'timer',
+    icon: 'hourglass_bottom',
     path: '/tool/timer',
     color: 'from-blue-600 to-indigo-700'
   },
@@ -71,7 +80,7 @@ const tools: Tool[] = [
     name: 'EMI Calculator',
     description: 'Calculate your Equated Monthly Installment (EMI) for loans.',
     category: ToolCategory.FINANCE,
-    icon: 'account_balance',
+    icon: 'calculate',
     path: '/tool/emi-calculator',
     color: 'from-emerald-600 to-green-700'
   },
@@ -80,7 +89,7 @@ const tools: Tool[] = [
     name: 'SIP Calculator',
     description: 'Calculate the future value of your SIP investments.',
     category: ToolCategory.FINANCE,
-    icon: 'trending_up',
+    icon: 'savings',
     path: '/tool/sip-calculator',
     color: 'from-indigo-500 to-blue-600'
   },
@@ -89,7 +98,7 @@ const tools: Tool[] = [
     name: 'QR Code Generator',
     description: 'Create a QR code for any text or URL.',
     category: ToolCategory.UTILITY,
-    icon: 'qr_code_2',
+    icon: 'qr_code_scanner',
     path: '/tool/qr-generator',
     color: 'from-blue-500 to-sky-600'
   },
@@ -98,7 +107,7 @@ const tools: Tool[] = [
     name: 'Password Generator',
     description: 'Generate strong, secure, and random passwords.',
     category: ToolCategory.UTILITY,
-    icon: 'lock',
+    icon: 'password',
     path: '/tool/password-generator',
     color: 'from-red-500 to-rose-600'
   },
@@ -107,7 +116,7 @@ const tools: Tool[] = [
     name: 'Character Counter',
     description: 'Count characters, words, sentences, and paragraphs in real-time.',
     category: ToolCategory.PRODUCTIVITY,
-    icon: 'abc',
+    icon: 'numbers',
     path: '/tool/character-counter',
     color: 'from-violet-500 to-purple-600'
   },
@@ -116,7 +125,7 @@ const tools: Tool[] = [
     name: 'Word Counter',
     description: 'Count words, characters, sentences, and paragraphs in your text.',
     category: ToolCategory.PRODUCTIVITY,
-    icon: 'notes',
+    icon: 'segment',
     path: '/tool/word-counter',
     color: 'from-pink-500 to-fuchsia-600'
   },
@@ -125,7 +134,7 @@ const tools: Tool[] = [
     name: 'Base64 Converter',
     description: 'Encode text to Base64 or decode from Base64.',
     category: ToolCategory.UTILITY,
-    icon: 'enhanced_encryption',
+    icon: 'code',
     path: '/tool/base64',
     color: 'from-slate-500 to-slate-600'
   },
@@ -134,7 +143,7 @@ const tools: Tool[] = [
     name: 'Color Picker',
     description: 'Pick a color and get its HEX, RGB, and HSL values.',
     category: ToolCategory.UTILITY,
-    icon: 'palette',
+    icon: 'colorize',
     path: '/tool/color-picker',
     color: 'from-fuchsia-500 to-purple-600'
   },
@@ -143,7 +152,7 @@ const tools: Tool[] = [
     name: 'Text to Speech',
     description: 'Convert written text into audible speech.',
     category: ToolCategory.UTILITY,
-    icon: 'record_voice_over',
+    icon: 'volume_up',
     path: '/tool/tts',
     color: 'from-cyan-500 to-blue-500'
   },
@@ -161,89 +170,120 @@ const tools: Tool[] = [
     name: 'JSON Formatter',
     description: 'Format, minify, and validate your JSON data.',
     category: ToolCategory.UTILITY,
-    icon: 'data_object',
+    icon: 'data_array',
     path: '/tool/json-formatter',
     color: 'from-yellow-500 to-amber-600'
   },
 ];
 
 const Dashboard: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  
   // Group tools by category
   const categories = Object.values(ToolCategory);
+  
+  const filterOptions = ['All', ...categories];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-slate-400">Access your daily tools and utilities in one place.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Welcome Widget */}
-          <div className="lg:col-span-2 p-6 rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-800 border border-indigo-500/30 relative overflow-hidden">
-             <div className="relative z-10">
-                <h2 className="text-2xl font-bold mb-2">Welcome Back!</h2>
-                <p className="text-indigo-100 max-w-lg mb-6">
-                  Ready to tackle complex problems? Try the new Deep Reasoner tool for advanced analysis and planning.
-                </p>
-                <Link to="/tool/deep-thinker" className="inline-flex items-center px-4 py-2 bg-white text-indigo-900 rounded-lg font-semibold hover:bg-indigo-50 transition">
-                  <span className="material-icons mr-2">psychology</span>
-                  Launch Deep Reasoner
-                </Link>
-             </div>
-             <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10">
-                <span className="material-icons text-9xl">rocket_launch</span>
-             </div>
-          </div>
-
-          {/* Quick Stats Widget (Mock) */}
-          <div className="p-6 rounded-2xl bg-slate-800 border border-slate-700">
-            <h3 className="text-lg font-semibold mb-4 text-slate-300">Quick Stats</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Notes Saved</span>
-                <span className="text-xl font-bold">12</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Monthly Expenses</span>
-                <span className="text-xl font-bold text-red-400">$1,240</span>
-              </div>
-              <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
-                <div className="bg-indigo-500 h-full w-2/3"></div>
-              </div>
-              <p className="text-xs text-slate-500">65% of monthly budget used</p>
-            </div>
-          </div>
-      </div>
-
-      {categories.map(category => {
-        const categoryTools = tools.filter(t => t.category === category);
-        if (categoryTools.length === 0) return null;
-
-        return (
-          <div key={category} className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-300 border-l-4 border-indigo-500 pl-3">{category}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {categoryTools.map(tool => (
-                <Link 
-                  key={tool.id} 
-                  to={tool.path}
-                  className="group relative bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col h-full"
+    <div className="max-w-7xl mx-auto space-y-8 pb-8">
+      <div className="space-y-4 animate-slide-up">
+        <div>
+            <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+            <p className="text-slate-400">Access your daily tools and utilities in one place.</p>
+        </div>
+        
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-2 pt-2">
+            {filterOptions.map(option => (
+                <button
+                    key={option}
+                    onClick={() => setSelectedCategory(option)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                        selectedCategory === option 
+                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' 
+                        : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-white'
+                    }`}
                 >
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <span className="material-icons text-white text-2xl">{tool.icon}</span>
-                  </div>
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-400 transition-colors">{tool.name}</h3>
-                  <p className="text-slate-400 text-sm flex-1">{tool.description}</p>
-                  <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center text-indigo-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    Open Tool <span className="material-icons text-sm ml-1">arrow_forward</span>
-                  </div>
-                </Link>
-              ))}
+                    {option}
+                </button>
+            ))}
+        </div>
+      </div>
+
+      {selectedCategory === 'All' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up delay-100">
+            {/* Welcome Widget */}
+            <div className="lg:col-span-2 p-6 rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-800 border border-indigo-500/30 relative overflow-hidden shadow-xl transition hover:border-indigo-500/50">
+                <div className="relative z-10">
+                    <h2 className="text-2xl font-bold mb-2">Welcome Back!</h2>
+                    <p className="text-indigo-100 max-w-lg mb-6">
+                    Ready to tackle complex problems? Try the new Deep Reasoner tool for advanced analysis and planning.
+                    </p>
+                    <Link to="/tool/deep-thinker" className="inline-flex items-center px-4 py-2 bg-white text-indigo-900 rounded-lg font-semibold hover:bg-indigo-50 transition shadow-lg active:scale-95">
+                    <span className="material-icons mr-2">psychology</span>
+                    Launch Deep Reasoner
+                    </Link>
+                </div>
+                <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10">
+                    <span className="material-icons text-9xl animate-pulse">rocket_launch</span>
+                </div>
             </div>
-          </div>
-        );
-      })}
+
+            {/* Quick Stats Widget (Mock) */}
+            <div className="p-6 rounded-2xl bg-slate-800 border border-slate-700 shadow-xl">
+                <h3 className="text-lg font-semibold mb-4 text-slate-300">Quick Stats</h3>
+                <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Notes Saved</span>
+                    <span className="text-xl font-bold">12</span>
+                </div>
+                <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Monthly Expenses</span>
+                    <span className="text-xl font-bold text-red-400">$1,240</span>
+                </div>
+                <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div className="bg-indigo-500 h-full w-2/3 animate-[width_1s_ease-out]"></div>
+                </div>
+                <p className="text-xs text-slate-500">65% of monthly budget used</p>
+                </div>
+            </div>
+        </div>
+      )}
+
+      <div className="animate-slide-up delay-200">
+        {categories.map((category, catIndex) => {
+            // If specific category selected, only show that one
+            if (selectedCategory !== 'All' && selectedCategory !== category) return null;
+
+            const categoryTools = tools.filter(t => t.category === category);
+            if (categoryTools.length === 0) return null;
+
+            return (
+            <div key={category} className="space-y-4 mb-8">
+                <h2 className="text-xl font-semibold text-slate-300 border-l-4 border-indigo-500 pl-3">{category}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {categoryTools.map((tool, index) => (
+                    <Link 
+                    key={tool.id} 
+                    to={tool.path}
+                    className="group relative bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col h-full hover:-translate-y-1"
+                    style={{ animationDelay: `${(catIndex * 100) + (index * 50)}ms` }}
+                    >
+                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <span className="material-icons text-white text-2xl">{tool.icon}</span>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-400 transition-colors">{tool.name}</h3>
+                    <p className="text-slate-400 text-sm flex-1">{tool.description}</p>
+                    <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center text-indigo-400 text-sm font-medium opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                        Open Tool <span className="material-icons text-sm ml-1">arrow_forward</span>
+                    </div>
+                    </Link>
+                ))}
+                </div>
+            </div>
+            );
+        })}
+      </div>
     </div>
   );
 };
